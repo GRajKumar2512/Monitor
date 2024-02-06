@@ -67,6 +67,9 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
+    implementation("androidx.compose.runtime:runtime-livedata:1.6.0")
+
     // another one
     implementation("ir.mahozad.android:pie-chart:0.7.0")
+
 }

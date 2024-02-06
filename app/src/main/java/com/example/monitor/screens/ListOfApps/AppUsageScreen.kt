@@ -20,15 +20,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.example.monitor.ViewModals.UsageStatsViewModel
 import com.example.monitor.models.AppUsage
 
 @Composable
-fun AppUsageScreen(appItems: MutableList<AppUsage>){
+fun AppUsageScreen(viewModel: UsageStatsViewModel){
+    val appUsageList = viewModel.usageStatsData
 
     Column (modifier =  Modifier.padding(horizontal = 20.dp).background(color = Color.Yellow)){
         Text(text = "Apps In Usage:", color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth());
         Spacer(modifier = Modifier.height(16.dp))
-        AppUsageList(appUsageList = appItems);
+        AppUsageList(appUsageList = appUsageList);
     }
 }
 
