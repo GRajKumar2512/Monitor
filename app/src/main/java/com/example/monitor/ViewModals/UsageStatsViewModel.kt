@@ -33,9 +33,20 @@ class UsageStatsViewModel : ViewModel() {
             null
         }
 
+//        return applicationInfo?.let {
+//            packageManager.getApplicationLabel(applicationInfo).toString()
+//        } ?: packageName
         return applicationInfo?.let {
             packageManager.getApplicationLabel(applicationInfo).toString()
-        } ?: packageName
+        } ?: run {
+            // Modify the package name if the application label is not available
+            val modifiedName = packageName
+                .replace("com", "")
+                .replace("google", "")
+                .replace("android", "")
+                .replace(".", " ")
+            modifiedName.trim() // Trim to remove any leading or trailing whitespace
+        }
     }
 
     private fun timeFormatter(usageTime: Long): String{
@@ -45,9 +56,9 @@ class UsageStatsViewModel : ViewModel() {
         val formattedMinutes: Long = timeInMinutes % 60;
 
         return if(timeInHours > 0) {
-            "$timeInHours hrs $formattedMinutes minutes"
+            "$timeInHours hr $formattedMinutes m"
         } else if(formattedMinutes > 0){
-            "$formattedMinutes minutes"
+            "$formattedMinutes m"
         } else {
             ""
         }

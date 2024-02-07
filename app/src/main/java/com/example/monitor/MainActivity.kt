@@ -1,5 +1,6 @@
 package com.example.monitor
 
+import ChartScreen
 import android.app.AppOpsManager
 import android.content.Intent
 import android.os.Bundle
@@ -9,10 +10,16 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.example.monitor.ViewModals.ChartModel
 import com.example.monitor.ViewModals.UsageStatsViewModel
 import com.example.monitor.models.AppUsage
 import com.example.monitor.screens.ListOfApps.AppUsageScreen
@@ -20,11 +27,13 @@ import com.example.monitor.ui.theme.MonitorTheme
 
 class MainActivity : ComponentActivity() {
 
-    private val  viewModel: UsageStatsViewModel by viewModels()
+    private val  appViewModel: UsageStatsViewModel by viewModels()
+    private val chartViewModel: ChartModel by viewModels()
 
     private val requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
         if(hasUsageStatsPermission()){
-            viewModel.fetchUsageStats(this)
+            appViewModel.fetchUsageStats(this)
+            chartViewModel.calculateFractions(this)
             setContent {
                 MonitorTheme {
                     // A surface container using the 'background' color from the theme
@@ -32,7 +41,11 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.fillMaxSize(),
                         color = MaterialTheme.colorScheme.background
                     ) {
-                        AppUsageScreen(viewModel)
+                        Column (horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.verticalScroll(
+                            rememberScrollState(0))){
+                            ChartScreen(chartViewModel)
+                            AppUsageScreen(appViewModel)
+                        }
                     }
                 }
             }
@@ -45,7 +58,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         if(hasUsageStatsPermission()){
-            viewModel.fetchUsageStats(this)
+            appViewModel.fetchUsageStats(this)
+            chartViewModel.calculateFractions(this)
             setContent {
                 MonitorTheme {
                     // A surface container using the 'background' color from the theme
@@ -53,7 +67,10 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.fillMaxSize(),
                         color = MaterialTheme.colorScheme.background
                     ) {
-                        AppUsageScreen(viewModel)
+                        Column (horizontalAlignment = Alignment.CenterHorizontally){
+                            ChartScreen(chartViewModel)
+                            AppUsageScreen(appViewModel)
+                        }
                     }
                 }
             }
